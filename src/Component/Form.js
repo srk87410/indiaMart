@@ -454,7 +454,7 @@ const FormComponent = () => {
                 style={{
                   backgroundColor: theme.primary,
                   color: "white",
-                  padding: "8px 16px",
+                  padding: "8px 6px",
                 }}
               >
                 <Row gutter={16} justify="center">
@@ -501,7 +501,11 @@ const FormComponent = () => {
                           </Form.Item>
                         </Col>
                         <Col span={12}>
-                          <Form.Item>
+                          <Form.Item
+                           validateStatus={location || !showValidation ? "" : "error"}
+                           help={
+                            location || !showValidation ? "" : t("enterLocation")
+                           }>
                             <Input
                               value={location}
                               onChange={(e) => setLocation(e.target.value)}
@@ -688,7 +692,7 @@ const FormComponent = () => {
                           label={t("language")}
                           style={{ marginTop: "-10px" }}
                         >
-                          <Select value={selectLang} onChange={setSelectLang}>
+                          <Select showSearch value={selectLang} onChange={setSelectLang}>
                             {langList.map((lang) => (
                               <Option key={lang.key} value={lang.key}>
                                 {lang.name}
