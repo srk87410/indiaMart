@@ -1,0 +1,25 @@
+{
+    "name": "DBM IndiaMart Extractor",
+    "short_name": "dbm-google-map",
+    "author": "Bit Beast Pvt Ltd.",
+    "git_repo": "dbm-google-map",
+    "reseller_id": "",
+    "show_ads": false,
+    "active_shop": false,
+    "buy_url": "",
+    "theme": "dark",
+    "theme_setting": {
+        "primary-color": "#181D3B"
+    },
+    "instance_limit": 10,
+    "lang": "en",
+    "country": "IN",
+    "country_code": 91,
+    "logo": "logo.png",
+    "logo_long": "logo-long.png",
+    "app_logo":"icon.png",
+    "renew":true,
+    "email":"",
+    "phone":"",
+    "siteUrl":""
+}
