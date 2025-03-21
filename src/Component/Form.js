@@ -30,6 +30,7 @@ import {
   PlayCircleOutlined,
   RightOutlined,
   LeftOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -902,9 +903,14 @@ const FormComponent = () => {
                     onChange={(e) => setKey(e.target.value)}
                     placeholder={t("Enter license key")}
                     suffix={
+                      // keyIsValid ? (
+                      //   <span style={{ color: "green" }}>✓</span>
+                      // ) : null
                       keyIsValid ? (
-                        <span style={{ color: "green" }}>✓</span>
-                      ) : null
+                        <CheckCircleOutlined style={{ color: 'green' }} />
+                      ) : (
+                        <CheckCircleOutlined style={{ color: 'gray' }} />
+                      )
                     }
                   />
                 </Form.Item>
