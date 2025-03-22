@@ -791,15 +791,15 @@ const FormComponent = () => {
                   </div>
                 )}
               </div>
-              <Space
-                style={{
-                  textAlign: "center",
-                  width: "100%",
-                  justifyContent: "center",
-                }}
-              >
-                <Text>{`V ${localmanifestVersion?.localVersion ?? ""}`}</Text>
-              </Space>
+               <Text
+                  style={{
+                   position:"absolute",
+                   bottom:0,
+                   left:"50%",
+                   transform: "translate(-50% ,-50%)"
+
+                  }}
+                >{`V ${localmanifestVersion?.localVersion || ""}`}</Text>
             </>
           ) : (
             <div style={{ padding: 16 }}>
