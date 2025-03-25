@@ -19,6 +19,7 @@ import {
   List,
   message,
   Carousel,
+  Flex,
 } from "antd";
 import {
   PhoneOutlined,
@@ -31,6 +32,7 @@ import {
   RightOutlined,
   LeftOutlined,
   CheckCircleOutlined,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -185,7 +187,7 @@ const FormComponent = () => {
   const getLicenseDetails = () => {
     sendChromeMessage({ type: "get_details" }, (response) => {
       if (response.status) {
-        setIsLicenseValid(true);
+        setIsLicenseValid(false);
         setLicenseMessage("");
       } else {
         setIsLicenseValid(false);
@@ -373,11 +375,19 @@ const FormComponent = () => {
         open={renewOpen}
         onCancel={renewCloseForm}
         footer={[
-          <Button key="renew" type="default" onClick={renewLicenseKey}>
+          <Button
+            key="renew"
+            type="default"
+            onClick={renewLicenseKey}
+            style={{ backgroundColor: "white", color: "black" }}
+          >
             {t("renew")}
           </Button>,
           product && rData?.active_shop ? (
-            <Button key="buy">
+            <Button
+              key="buy"
+              style={{ backgroundColor: "white", color: "black" }}
+            >
               <a
                 href={product?.siteUrl || rData?.buy_url}
                 target="_blank"
@@ -423,19 +433,32 @@ const FormComponent = () => {
           >
             <Text style={{ color: "white" }}>{t("expireDate")}</Text>
             <Tag color="cyan">{expireDate()}</Tag>
-            <Tag
+            <Button
               color="black"
               onClick={renewOpenForm}
-              style={{ cursor: "pointer" }}
+              style={{
+                cursor: "pointer",
+                backgroundColor: "white",
+                color: "black",
+                height: "25px",
+                width: "65px",
+              }}
             >
               {t("renewLabel")}
-            </Tag>
+            </Button>
           </Space>
         )}
       </div>
 
       {isLoading ? (
-        <div style={{ textAlign: "center", padding: 50,justifyContent:"center",display:"flex" }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: 50,
+            justifyContent: "center",
+            display: "flex",
+          }}
+        >
           <Spin
             size="large"
             tip={t("loading")}
@@ -503,10 +526,15 @@ const FormComponent = () => {
                         </Col>
                         <Col span={12}>
                           <Form.Item
-                           validateStatus={location || !showValidation ? "" : "error"}
-                           help={
-                            location || !showValidation ? "" : t("enterLocation")
-                           }>
+                            validateStatus={
+                              location || !showValidation ? "" : "error"
+                            }
+                            help={
+                              location || !showValidation
+                                ? ""
+                                : t("enterLocation")
+                            }
+                          >
                             <Input
                               value={location}
                               onChange={(e) => setLocation(e.target.value)}
@@ -610,10 +638,22 @@ const FormComponent = () => {
                       <Alert message={t("noDataFound")} type="warning" />
                     ) : (
                       <>
-                        <Form.Item label={t("keyword")}>
+                        {/* {/* <Form.Item label={t("keyword")}> */}
+                        <Form.Item
+                          label={
+                            <Typography.Title level={5}>
+                              {t("keyword")}
+                            </Typography.Title>
+                          }
+                        >
                           <Select
                             value={selectedKeywordId}
                             onChange={setSelectedKeywordId}
+                            style={{
+                              width: 300,
+                              marginTop: 8,
+                              marginTop: "-6px",
+                            }}
                           >
                             <Option value="select">Select</Option>
                             {Object.keys(scrapData).map((key) => (
@@ -623,6 +663,16 @@ const FormComponent = () => {
                             ))}
                           </Select>
                         </Form.Item>
+
+                        {/* <Select value={selectedKeywordId} onChange={(value) => setSelectedKeywordId(value)}>
+                              <Option value="select">Select</Option>
+                              {Object.keys(scrapData).map((key) => (
+                                <Option key={key} value={key}>
+                                  {scrapData[key].name}
+                                </Option>
+                              ))}
+                            </Select>
+                          </Form.Item> */}
                         {selectedKeywordId !== "select" && (
                           <>
                             <Space direction="vertical">
@@ -640,7 +690,13 @@ const FormComponent = () => {
                                 )}
                               </Text>
                             </Space>
-                            <Space style={{ marginTop: 16 }}>
+                            <Space
+                              style={{
+                                marginTop: 16,
+                                justifyContent: "center",
+                                display: "flex",
+                              }}
+                            >
                               <Button
                                 type="primary"
                                 onClick={onDownloadScrapData}
@@ -653,11 +709,13 @@ const FormComponent = () => {
                             </Space>
                           </>
                         )}
-                        <Space style={{ marginTop: 16 }}>
+                        {/* <Space style={{ marginTop: 16 }}> */}
+                        <Flex justify="center" style={{ marginTop: "10px" }}>
                           <Button danger onClick={onClearScrapData}>
                             {t("clearAll")}
                           </Button>
-                        </Space>
+                        </Flex>
+                        {/* </Space> */}
                       </>
                     )}
                   </div>
@@ -665,7 +723,10 @@ const FormComponent = () => {
 
                 {selectedTabId === 2 && (
                   <Form onFinish={onSaveSetting}>
-                    <Form.Item label={t("removeDuplicate")}>
+                    <Form.Item
+                      style={{ fontWeight: 600 }}
+                      label={t("removeDuplicate")}
+                    >
                       <Select
                         value={removeDuplicate}
                         onChange={setRemoveDuplicate}
@@ -679,7 +740,10 @@ const FormComponent = () => {
                     </Form.Item>
                     <Row gutter={16}>
                       <Col span={12} style={{ marginTop: "-10px" }}>
-                        <Form.Item label={t("delay")}>
+                        <Form.Item
+                          style={{ fontWeight: 600 }}
+                          label={t("delay")}
+                        >
                           <Input
                             type="number"
                             value={delay}
@@ -691,9 +755,13 @@ const FormComponent = () => {
                       <Col span={12}>
                         <Form.Item
                           label={t("language")}
-                          style={{ marginTop: "-10px" }}
+                          style={{ marginTop: "-10px", fontWeight: 600 }}
                         >
-                          <Select showSearch value={selectLang} onChange={setSelectLang}>
+                          <Select
+                            showSearch
+                            value={selectLang}
+                            onChange={setSelectLang}
+                          >
                             {langList.map((lang) => (
                               <Option key={lang.key} value={lang.key}>
                                 {lang.name}
@@ -791,19 +859,18 @@ const FormComponent = () => {
                   </div>
                 )}
               </div>
-               <Text
-                  style={{
-                   position:"absolute",
-                   bottom:0,
-                   left:"50%",
-                   transform: "translate(-50% ,-50%)"
-
-                  }}
-                >{`V ${localmanifestVersion?.localVersion || ""}`}</Text>
+              <Text
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translate(-50% ,-50%)",
+                }}
+              >{`V ${localmanifestVersion?.localVersion || ""}`}</Text>
             </>
           ) : (
             <div style={{ padding: 16 }}>
-              <Form onFinish={onActivateSubmit} style={{marginTop:"30px"}}>
+              <Form onFinish={onActivateSubmit} style={{ marginTop: "30px" }}>
                 {licenseMessage && (
                   <Alert
                     // message={t(licenseMessage)}
@@ -845,12 +912,27 @@ const FormComponent = () => {
                     placeholder={t("Enter your email")}
                   />
                 </Form.Item>
+
                 <Form.Item
-                  validateStatus={phone || !showValidation ? "" : "error"}
-                  help={phone || !showValidation ? "" : t("Phone is required")}
+                  validateStatus={!phone || phone === "91" ? "error" : ""}
+                  help={!phone || phone === "91" ? t("Phone is required") : ""}
+                  style={{
+                    width: "100%", 
+                  }}
                 >
-                  <PhoneInput country="in" value={phone} onChange={setPhone} />
+                  <PhoneInput
+                    style={{
+                      width: "100%", 
+                    }}
+                    country="in"
+                    value={phone}
+                    onChange={(value) => {
+                      setPhone(value);
+                      // setShowValidation(true);
+                    }}
+                  />
                 </Form.Item>
+
                 <Form.Item
                   validateStatus={city || !showValidation ? "" : "error"}
                   help={city || !showValidation ? "" : t("City is required")}
@@ -885,7 +967,7 @@ const FormComponent = () => {
                   </Form.Item>
                 </Form>
 
-                <Form.Item
+                {/* <Form.Item
                   validateStatus={
                     key ? (keyIsValid ? "success" : "error") : "error"
                   }
@@ -911,6 +993,43 @@ const FormComponent = () => {
                       ) : (
                         <CheckCircleOutlined style={{ color: 'gray' }} />
                       )
+                    }
+                  />
+                </Form.Item> */}
+                <Form.Item
+                  validateStatus={
+                    showValidation
+                      ? key
+                        ? keyIsValid
+                          ? "success"
+                          : "error"
+                        : "error"
+                      : ""
+                  }
+                  help={
+                    showValidation
+                      ? key
+                        ? keyIsValid
+                          ? ""
+                          : t("Invalid license key")
+                        : t("License key is required")
+                      : ""
+                  }
+                >
+                  <Input
+                    prefix={<KeyOutlined />}
+                    value={key}
+                    onChange={(e) => {
+                      setKey(e.target.value);
+                      setShowValidation(true); // ફક્ત ફેરફાર બાદ વેલિડેશન ચાલુ થાય
+                    }}
+                    placeholder={t("Enter license key")}
+                    suffix={
+                      key && keyIsValid ? (
+                        <CheckCircleOutlined style={{ color: "green" }} />
+                      ) : key ? (
+                        <CloseCircleOutlined style={{ color: "red" }} />
+                      ) : null
                     }
                   />
                 </Form.Item>

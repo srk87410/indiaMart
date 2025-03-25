@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "latest",
-    "@mui/icons-material": "latest",
-    "@mui/styled-engine-sc": "latest",
     "antd": "^5.24.4",
     "i18next": "^23.16.8",
     "libphonenumber-js": "^1.10.41",
