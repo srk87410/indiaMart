@@ -20,6 +20,7 @@ import {
   message,
   Carousel,
   Flex,
+  ConfigProvider,
 } from "antd";
 import {
   PhoneOutlined,
@@ -33,6 +34,7 @@ import {
   LeftOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
+  EnvironmentOutlined,
 } from "@ant-design/icons";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -50,7 +52,7 @@ const FormComponent = () => {
   const [form] = Form.useForm();
 
   const [rData, setRData] = useState({});
-  const [theme, setTheme] = useState({ primary: "#0855a4" });
+  const [theme, setTheme] = useState({ primary: "#4c379e" });
   const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [setting, setSetting] = useState(null);
@@ -187,7 +189,7 @@ const FormComponent = () => {
   const getLicenseDetails = () => {
     sendChromeMessage({ type: "get_details" }, (response) => {
       if (response.status) {
-        setIsLicenseValid(false);
+        setIsLicenseValid(true);
         setLicenseMessage("");
       } else {
         setIsLicenseValid(false);
@@ -369,302 +371,314 @@ const FormComponent = () => {
   };
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif" }}>
-      <Modal
-        title={t("renewLicense")}
-        open={renewOpen}
-        onCancel={renewCloseForm}
-        footer={[
-          <Button
-            key="renew"
-            type="default"
-            onClick={renewLicenseKey}
-            style={{ backgroundColor: "white", color: "black" }}
-          >
-            {t("renew")}
-          </Button>,
-          product && rData?.active_shop ? (
+    <ConfigProvider
+      theme={{
+        token: { colorPrimary: theme.primary },
+      }}
+    >
+      <div style={{ fontFamily: "'Poppins', sans-serif" }}>
+        <Modal
+          title={t("renewLicense")}
+          open={renewOpen}
+          onCancel={renewCloseForm}
+          footer={[
             <Button
-              key="buy"
-              style={{ backgroundColor: "white", color: "black" }}
+              key="renew"
+              style={{backgroundColor: theme.primary,color:"white"}}
+              type="default"
+              onClick={renewLicenseKey}
+              // style={{ backgroundColor: "white", color: "black" }}
             >
-              <a
-                href={product?.siteUrl || rData?.buy_url}
-                target="_blank"
-                rel="noopener noreferrer"
+              {t("renew")}
+            </Button>,
+            product && rData?.active_shop ? (
+              <Button
+                key="buy"
+                // style={{ backgroundColor: "white", color: "black" }}
               >
-                {t("buyNow")}
-              </a>
-            </Button>
-          ) : null,
-        ]}
-      >
-        <Input
-          value={renewKey}
-          onChange={(e) => setRenewKey(e.target.value)}
-          placeholder={t("enterLicenseKey")}
-          prefix={<KeyOutlined />}
-          suffix={keyIsValid ? <span style={{ color: "green" }}>✓</span> : null}
-        />
-        <Text>{t("renewDBMbeforeExpire")}</Text>
-        <br />
-        <Text>{t("subscription1Y")}</Text>
-        <br />
-        <Text>{t("subscription3M")}</Text>
-        <br />
-        <Text>{t("subscription1M")}</Text>
-      </Modal>
-
-      <div
-        style={{ backgroundColor: theme.primary, padding: 15, opacity: 0.9 }}
-      >
-        <Space
-          align="center"
-          style={{ width: "100%", justifyContent: "center" }}
+                <a
+                  href={product?.siteUrl || rData?.buy_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t("buyNow")}
+                </a>
+              </Button>
+            ) : null,
+          ]}
         >
-          <img src={logo} alt={product?.name ?? ""} width={45} height={45} />
-          <Title level={4} style={{ color: "white", margin: 0 }}>
-            {rData?.name ?? t("imName")}
-          </Title>
-        </Space>
-        {isLicenseValid && (
-          <Space
-            style={{ marginTop: 8, justifyContent: "center", width: "100%" }}
-          >
-            <Text style={{ color: "white" }}>{t("expireDate")}</Text>
-            <Tag color="cyan">{expireDate()}</Tag>
-            <Button
-              color="black"
-              onClick={renewOpenForm}
-              style={{
-                cursor: "pointer",
-                backgroundColor: "white",
-                color: "black",
-                height: "25px",
-                width: "65px",
-              }}
-            >
-              {t("renewLabel")}
-            </Button>
-          </Space>
-        )}
-      </div>
-
-      {isLoading ? (
-        <div
-          style={{
-            textAlign: "center",
-            padding: 50,
-            justifyContent: "center",
-            display: "flex",
-          }}
-        >
-          <Spin
-            size="large"
-            tip={t("loading")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            className="mainBox"
+          <Input
+            value={renewKey}
+            onChange={(e) => setRenewKey(e.target.value)}
+            placeholder={t("enterLicenseKey")}
+            prefix={<KeyOutlined />}
+            suffix={
+              keyIsValid ? <span style={{ color: "green" }}>✓</span> : null
+            }
           />
-        </div>
-      ) : (
-        <div>
-          {isLicenseValid ? (
-            <>
-              <div
+          <Text>{t("renewDBMbeforeExpire")}</Text>
+          <br />
+          <Text>{t("subscription1Y")}</Text>
+          <br />
+          <Text>{t("subscription3M")}</Text>
+          <br />
+          <Text>{t("subscription1M")}</Text>
+        </Modal>
+
+        <div
+          style={{ backgroundColor: theme.primary, padding: 15,  }}
+        >
+          <Space
+            align="center"
+            style={{ width: "100%", justifyContent: "center" }}
+          >
+            <img src={logo} alt={product?.name ?? ""} width={45} height={45} />
+            <Title level={4} style={{ color: "white", margin: 0 }}>
+              {rData?.name ?? t("imName")}
+            </Title>
+          </Space>
+          {isLicenseValid && (
+            <Space
+              style={{ marginTop: 8, justifyContent: "center", width: "100%" }}
+            >
+              <Text style={{ color: "white" }}>{t("expireDate")}</Text>
+              <Tag color="cyan">{expireDate()}</Tag>
+              <Button
+                color="black"
+                onClick={renewOpenForm}
                 style={{
-                  backgroundColor: theme.primary,
-                  color: "white",
-                  padding: "8px 6px",
+                  cursor: "pointer",
+                  backgroundColor: "white",
+                  color: "black",
+                  height: "25px",
+                  width: "65px",
+                  backgroundColor: theme.primary,color:"white"
                 }}
               >
-                <Row gutter={16} justify="center">
-                  {["home", "data", "setting", "help"].map((tab, i) => (
-                    <Col key={tab}>
-                      <Button
-                        type={selectedTabId === i ? "primary" : "text"}
-                        onClick={() => setSelectedTabId(i)}
-                        style={{
-                          color: selectedTabId === i ? "white" : "inherit",
-                        }}
-                      >
-                        {t(tab)}
-                      </Button>
-                    </Col>
-                  ))}
-                </Row>
-              </div>
+                {t("renewLabel")}
+              </Button>
+            </Space>
+          )}
+        </div>
 
-              <div style={{ padding: 16 }}>
-                {selectedTabId === 0 && (
-                  <Form onFinish={onScrape} style={{ marginTop: "-25px" }}>
-                    <Title level={5}>
-                      {t("welcome")} {licenseDetails?.name ?? ""}
-                    </Title>
-                    <div>
-                      <Row gutter={16}>
-                        <Col span={12}>
-                          <Form.Item
-                            validateStatus={
-                              keyword || !showValidation ? "" : "error"
-                            }
-                            help={
-                              keyword || !showValidation
-                                ? ""
-                                : t("keywordIsRequired")
-                            }
-                          >
-                            <Input
-                              value={keyword}
-                              onChange={(e) => setKeyword(e.target.value)}
-                              placeholder={t("keyword")}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                          <Form.Item
-                            validateStatus={
-                              location || !showValidation ? "" : "error"
-                            }
-                            help={
-                              location || !showValidation
-                                ? ""
-                                : t("enterLocation")
-                            }
-                          >
-                            <Input
-                              value={location}
-                              onChange={(e) => setLocation(e.target.value)}
-                              placeholder={t("enterLocation")}
-                            />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                      <div style={{ textAlign: "center" }}>
-                        <Button type="primary" htmlType="submit">
-                          Start
-                        </Button>
-                      </div>
-                    </div>
-                    <Row justify="center">
-                      <Col xs={24} style={{ maxWidth: "355px", marginTop: 16 }}>
-                        <Carousel
-                          afterChange={(step) => setActiveStep(step)}
-                          autoplay
-                          autoplaySpeed={10000}
-                          dots={false}
+        {isLoading ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: 50,
+              justifyContent: "center",
+              display: "flex",
+            }}
+          >
+            <Spin
+              size="large"
+              tip={t("loading")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              className="mainBox"
+            />
+          </div>
+        ) : (
+          <div>
+            {isLicenseValid ? (
+              <>
+                <div
+                  style={{
+                    backgroundColor: theme.primary,
+                    color: "white",
+                    padding: "8px 6px",
+                  }}
+                >
+                  <Row gutter={16} justify="center">
+                    {["home", "data", "setting", "help"].map((tab, i) => (
+                      <Col key={tab}>
+                        <Button
+                          type={selectedTabId === i ? "default" : "text"}
+                          onClick={() => setSelectedTabId(i)}
+                          style={{
+                            color: selectedTabId === i ? "#000" : "inherit",
+                          }}
                         >
-                          {activeStep === 0 && product.image && (
-                            <Link
-                              href={product.adBannerUrl || "#"}
-                              target="_blank"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                            >
-                              <img
-                                src={product.image || ""}
-                                alt="Ad Banner"
-                                style={{ height: 200, width: "100%" }}
-                              />
-                            </Link>
-                          )}
+                          {t(tab)}
+                        </Button>
+                      </Col>
+                    ))}
+                  </Row>
+                </div>
 
-                          {activeStep === 1 &&
-                            product.demoVideoUrl?.includes("youtube.com") && (
+                <div style={{ padding: 16 }}>
+                  {selectedTabId === 0 && (
+                    <Form onFinish={onScrape} style={{ marginTop: "-25px" }}>
+                      <Title level={5}>
+                        {t("welcome")} {licenseDetails?.name ?? ""}
+                      </Title>
+                      <div>
+                        <Row gutter={16}>
+                          <Col span={12}>
+                            <Form.Item
+                              validateStatus={
+                                keyword || !showValidation ? "" : "error"
+                              }
+                              help={
+                                keyword || !showValidation
+                                  ? ""
+                                  : t("keywordIsRequired")
+                              }
+                            >
+                              <Input
+                                value={keyword}
+                                onChange={(e) => setKeyword(e.target.value)}
+                                placeholder={t("keyword")}
+                              />
+                            </Form.Item>
+                          </Col>
+                          <Col span={12}>
+                            <Form.Item
+                              validateStatus={
+                                location || !showValidation ? "" : "error"
+                              }
+                              help={
+                                location || !showValidation
+                                  ? ""
+                                  : t("enterLocation")
+                              }
+                            >
+                              <Input
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                placeholder={t("enterLocation")}
+                              />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                        <div style={{ textAlign: "center" }}>
+                          <Button type="primary" htmlType="submit">
+                            Start
+                          </Button>
+                        </div>
+                      </div>
+                      <Row justify="center">
+                        <Col
+                          xs={24}
+                          style={{ maxWidth: "355px", marginTop: 16 }}
+                        >
+                          <Carousel
+                            afterChange={(step) => setActiveStep(step)}
+                            autoplay
+                            autoplaySpeed={10000}
+                            dots={false}
+                          >
+                            {activeStep === 0 && product.image && (
                               <Link
-                                href={product.demoVideoUrl || "#"}
+                                href={product.adBannerUrl || "#"}
                                 target="_blank"
                                 style={{
-                                  position: "relative",
-                                  display: "block",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
                                 }}
                               >
-                                <PlayCircleOutlined
-                                  style={{
-                                    position: "absolute",
-                                    top: "40%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    fontSize: "110px",
-                                    color: "grey",
-                                    opacity: 0.8,
-                                  }}
-                                />
                                 <img
-                                  src={getYoutubeThumbnail(
-                                    product.demoVideoUrl
-                                  )}
-                                  alt="Demo Video"
+                                  src={product.image || ""}
+                                  alt="Ad Banner"
                                   style={{ height: 200, width: "100%" }}
                                 />
                               </Link>
                             )}
-                        </Carousel>
 
-                        <Row
-                          justify="space-between"
-                          align="middle"
-                          style={{ marginTop: 8 }}
-                        >
-                          <Button
-                            onClick={() => setActiveStep((prev) => prev - 1)}
-                            disabled={activeStep === 0}
-                            icon={<LeftOutlined />}
-                          >
-                            Back
-                          </Button>
-                          <Button
-                            onClick={() => setActiveStep((prev) => prev + 1)}
-                            disabled={activeStep === totalSlider() - 1}
-                            icon={<RightOutlined />}
-                          >
-                            Next
-                          </Button>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Form>
-                )}
+                            {activeStep === 1 &&
+                              product.demoVideoUrl?.includes("youtube.com") && (
+                                <Link
+                                  href={product.demoVideoUrl || "#"}
+                                  target="_blank"
+                                  style={{
+                                    position: "relative",
+                                    display: "block",
+                                  }}
+                                >
+                                  <PlayCircleOutlined
+                                    style={{
+                                      position: "absolute",
+                                      top: "40%",
+                                      left: "50%",
+                                      transform: "translate(-50%, -50%)",
+                                      fontSize: "110px",
+                                      color: "grey",
+                                      opacity: 0.8,
+                                    }}
+                                  />
+                                  <img
+                                    src={getYoutubeThumbnail(
+                                      product.demoVideoUrl
+                                    )}
+                                    alt="Demo Video"
+                                    style={{ height: 200, width: "100%" }}
+                                  />
+                                </Link>
+                              )}
+                          </Carousel>
 
-                {selectedTabId === 1 && (
-                  <div>
-                    {Object.keys(scrapData).length === 0 ? (
-                      <Alert message={t("noDataFound")} type="warning" />
-                    ) : (
-                      <>
-                        {/* {/* <Form.Item label={t("keyword")}> */}
-                        <Form.Item
-                          label={
-                            <Typography.Title level={5}>
-                              {t("keyword")}
-                            </Typography.Title>
-                          }
-                        >
-                          <Select
-                            value={selectedKeywordId}
-                            onChange={setSelectedKeywordId}
-                            style={{
-                              width: 300,
-                              marginTop: 8,
-                              marginTop: "-6px",
-                            }}
+                          <Row
+                            justify="space-between"
+                            align="middle"
+                            style={{ marginTop: 8 }}
                           >
-                            <Option value="select">Select</Option>
-                            {Object.keys(scrapData).map((key) => (
-                              <Option key={key} value={key}>
-                                {scrapData[key].name}
-                              </Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
+                            <Button
+                              onClick={() => setActiveStep((prev) => prev - 1)}
+                              disabled={activeStep === 0}
+                              icon={<LeftOutlined />}
+                            >
+                              Back
+                            </Button>
+                            <Button
+                              onClick={() => setActiveStep((prev) => prev + 1)}
+                              disabled={activeStep === totalSlider() - 1}
+                              icon={<RightOutlined />}
+                            >
+                              Next
+                            </Button>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </Form>
+                  )}
 
-                        {/* <Select value={selectedKeywordId} onChange={(value) => setSelectedKeywordId(value)}>
+                  {selectedTabId === 1 && (
+                    <div>
+                      {Object.keys(scrapData).length === 0 ? (
+                        <Alert message={t("noDataFound")} type="warning" />
+                      ) : (
+                        <>
+                          {/* {/* <Form.Item label={t("keyword")}> */}
+                          <Form.Item
+                            label={
+                              <Typography.Title level={5}>
+                                {t("keyword")}
+                              </Typography.Title>
+                            }
+                          >
+                            <Select
+                              value={selectedKeywordId}
+                              onChange={setSelectedKeywordId}
+                              style={{
+                                width: 300,
+                                marginTop: 8,
+                                marginTop: "-6px",
+                              }}
+                            >
+                              <Option value="select">Select</Option>
+                              {Object.keys(scrapData).map((key) => (
+                                <Option key={key} value={key}>
+                                  {scrapData[key].name}
+                                </Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
+
+                          {/* <Select value={selectedKeywordId} onChange={(value) => setSelectedKeywordId(value)}>
                               <Option value="select">Select</Option>
                               {Object.keys(scrapData).map((key) => (
                                 <Option key={key} value={key}>
@@ -673,301 +687,297 @@ const FormComponent = () => {
                               ))}
                             </Select>
                           </Form.Item> */}
-                        {selectedKeywordId !== "select" && (
-                          <>
-                            <Space direction="vertical">
-                              <Text>
-                                {t("totalData")}:{" "}
-                                {
-                                  (scrapData[selectedKeywordId]?.data ?? [])
-                                    .length
-                                }
-                              </Text>
-                              <Text>
-                                {t("lastDate")}:{" "}
-                                {dateFormat(
-                                  scrapData[selectedKeywordId]?.createdAt
-                                )}
-                              </Text>
-                            </Space>
-                            <Space
-                              style={{
-                                marginTop: 16,
-                                justifyContent: "center",
-                                display: "flex",
-                              }}
-                            >
-                              <Button
-                                type="primary"
-                                onClick={onDownloadScrapData}
+                          {selectedKeywordId !== "select" && (
+                            <>
+                              <Space direction="vertical">
+                                <Text>
+                                  {t("totalData")}:{" "}
+                                  {
+                                    (scrapData[selectedKeywordId]?.data ?? [])
+                                      .length
+                                  }
+                                </Text>
+                                <Text>
+                                  {t("lastDate")}:{" "}
+                                  {dateFormat(
+                                    scrapData[selectedKeywordId]?.createdAt
+                                  )}
+                                </Text>
+                              </Space>
+                              <Space
+                                style={{
+                                  marginTop: 16,
+                                  justifyContent: "center",
+                                  display: "flex",
+                                }}
                               >
-                                {t("download")}
-                              </Button>
-                              <Button danger onClick={onDeleteScrapData}>
-                                {t("delete")}
-                              </Button>
-                            </Space>
-                          </>
-                        )}
-                        {/* <Space style={{ marginTop: 16 }}> */}
-                        <Flex justify="center" style={{ marginTop: "10px" }}>
-                          <Button danger onClick={onClearScrapData}>
-                            {t("clearAll")}
-                          </Button>
-                        </Flex>
-                        {/* </Space> */}
-                      </>
-                    )}
-                  </div>
-                )}
-
-                {selectedTabId === 2 && (
-                  <Form onFinish={onSaveSetting}>
-                    <Form.Item
-                      style={{ fontWeight: 600 }}
-                      label={t("removeDuplicate")}
-                    >
-                      <Select
-                        value={removeDuplicate}
-                        onChange={setRemoveDuplicate}
-                      >
-                        <Option value="only_phone">{t("onlyPhone")}</Option>
-                        <Option value="only_address">{t("onlyAddress")}</Option>
-                        <Option value="phone_and_address">
-                          {t("phoneAndaddress")}
-                        </Option>
-                      </Select>
-                    </Form.Item>
-                    <Row gutter={16}>
-                      <Col span={12} style={{ marginTop: "-10px" }}>
-                        <Form.Item
-                          style={{ fontWeight: 600 }}
-                          label={t("delay")}
-                        >
-                          <Input
-                            type="number"
-                            value={delay}
-                            onChange={(e) => setDelay(e.target.value)}
-                            min={1}
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={12}>
-                        <Form.Item
-                          label={t("language")}
-                          style={{ marginTop: "-10px", fontWeight: 600 }}
-                        >
-                          <Select
-                            showSearch
-                            value={selectLang}
-                            onChange={setSelectLang}
-                          >
-                            {langList.map((lang) => (
-                              <Option key={lang.key} value={lang.key}>
-                                {lang.name}
-                              </Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                    <Text strong style={{ marginTop: "-20px" }}>
-                      {t("extractingCol")}{" "}
-                    </Text>
-                    <Row gutter={[16, 16]} style={{ marginTop: "10px" }}>
-                      {columns.map((col) => (
-                        <Col span={12} key={col.value}>
-                          <Checkbox
-                            checked={extractCol[col.value]}
-                            onChange={(e) =>
-                              setExtractCol((prev) => ({
-                                ...prev,
-                                [col.value]: e.target.checked,
-                              }))
-                            }
-                          >
-                            {t(col.label)}
-                          </Checkbox>
-                        </Col>
-                      ))}
-                    </Row>
-                    <Form.Item
-                      style={{ justifyContent: "center", display: "flex" }}
-                    >
-                      <Button type="primary" htmlType="submit">
-                        {t("save")}
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                )}
-
-                {selectedTabId === 3 && (
-                  <div style={{ marginTop: "-20px" }}>
-                    <Title level={5}>{t("helpMsg")}</Title>
-                    <Text>{t("contactWithEmail")}</Text>
-                    <List
-                      dataSource={[
-                        {
-                          icon: <PhoneOutlined />,
-                          label: t("phone"),
-                          value: rData?.active_shop
-                            ? product?.contactNumber
-                            : rData?.phone,
-                          href: "tel:",
-                        },
-                        {
-                          icon: <MailOutlined />,
-                          label: t("email"),
-                          value: rData?.active_shop
-                            ? product?.email
-                            : rData?.email,
-                          href: "mailto:",
-                        },
-                        {
-                          icon: <GlobalOutlined />,
-                          label: t("website"),
-                          value: rData?.active_shop
-                            ? product?.siteUrl
-                            : rData?.siteUrl,
-                          href: "",
-                        },
-                      ].filter((item) => item.value)}
-                      renderItem={(item) => (
-                        <List.Item
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <span style={{ marginRight: "15px" }}>
-                            {item.icon}
-                          </span>{" "}
-                          {/* Icon with gap */}
-                          <List.Item.Meta
-                            title={item.label}
-                            description={
-                              <Link
-                                href={`${item.href}${item.value}`}
-                                target="_blank"
-                              >
-                                {item.value}
-                              </Link>
-                            }
-                          />
-                        </List.Item>
+                                <Button
+                                  type="primary"
+                                  onClick={onDownloadScrapData}
+                                >
+                                  {t("download")}
+                                </Button>
+                                <Button onClick={onDeleteScrapData} style={{backgroundColor:"red",color:"white"}}>
+                                  {t("delete")}
+                                </Button>
+                              </Space>
+                            </>
+                          )}
+                          {/* <Space style={{ marginTop: 16 }}> */}
+                          <Flex justify="center" style={{ marginTop: "10px" }}>
+                            <Button danger onClick={onClearScrapData}>
+                              {t("clearAll")}
+                            </Button>
+                          </Flex>
+                          {/* </Space> */}
+                        </>
                       )}
-                    />
-                    <Title level={5}>{t("disclaimer")}:</Title>
-                    <Text>{t("imCertified")}</Text>
-                  </div>
-                )}
-              </div>
-              <Text
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: "50%",
-                  transform: "translate(-50% ,-50%)",
-                }}
-              >{`V ${localmanifestVersion?.localVersion || ""}`}</Text>
-            </>
-          ) : (
-            <div style={{ padding: 16 }}>
-              <Form onFinish={onActivateSubmit} style={{ marginTop: "30px" }}>
-                {licenseMessage && (
-                  <Alert
-                    // message={t(licenseMessage)}
-                    type="error" // Changed to "error" for red color
-                    style={{ marginBottom: 16 }}
-                  />
-                )}
-                <Form.Item
-                  validateStatus={name || !showValidation ? "" : "error"}
-                  help={name || !showValidation ? "" : t("Name is required")}
-                >
-                  <Input
-                    prefix={<UserOutlined />}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder={t("Enter your name")}
-                  />
-                </Form.Item>
-                <Form.Item
-                  validateStatus={
-                    (email && isEmailIsValid(email)) || !showValidation
-                      ? ""
-                      : "error"
-                  }
-                  help={
-                    email
-                      ? isEmailIsValid(email) || !showValidation
-                        ? ""
-                        : t("Invalid email")
-                      : showValidation
-                      ? t("Email is required")
-                      : ""
-                  }
-                >
-                  <Input
-                    prefix={<MailOutlined />}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t("Enter your email")}
-                  />
-                </Form.Item>
+                    </div>
+                  )}
 
-                <Form.Item
-                  validateStatus={!phone || phone === "91" ? "error" : ""}
-                  help={!phone || phone === "91" ? t("Phone is required") : ""}
+                  {selectedTabId === 2 && (
+                    <Form onFinish={onSaveSetting}>
+                      <Form.Item
+                        style={{ fontWeight: 600 }}
+                        label={t("removeDuplicate")}
+                      >
+                        <Select
+                          value={removeDuplicate}
+                          onChange={setRemoveDuplicate}
+                        >
+                          <Option value="only_phone">{t("onlyPhone")}</Option>
+                          <Option value="only_address">
+                            {t("onlyAddress")}
+                          </Option>
+                          <Option value="phone_and_address">
+                            {t("phoneAndaddress")}
+                          </Option>
+                        </Select>
+                      </Form.Item>
+                      <Row gutter={16}>
+                        <Col span={12} style={{ marginTop: "-10px" }}>
+                          <Form.Item
+                            style={{ fontWeight: 600 }}
+                            label={t("delay")}
+                          >
+                            <Input
+                              type="number"
+                              value={delay}
+                              onChange={(e) => setDelay(e.target.value)}
+                              min={1}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item
+                            label={t("language")}
+                            style={{ marginTop: "-10px", fontWeight: 600 }}
+                          >
+                            <Select
+                              showSearch
+                              value={selectLang}
+                              onChange={setSelectLang}
+                            >
+                              {langList.map((lang) => (
+                                <Option key={lang.key} value={lang.key}>
+                                  {lang.name}
+                                </Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                      <Text strong style={{ marginTop: "-20px" }}>
+                        {t("extractingCol")}{" "}
+                      </Text>
+                      <Row gutter={[16, 16]} style={{ marginTop: "10px" }}>
+                        {columns.map((col) => (
+                          <Col span={12} key={col.value}>
+                            <Checkbox
+                              checked={extractCol[col.value]}
+                              onChange={(e) =>
+                                setExtractCol((prev) => ({
+                                  ...prev,
+                                  [col.value]: e.target.checked,
+                                }))
+                              }
+                            >
+                              {t(col.label)}
+                            </Checkbox>
+                          </Col>
+                        ))}
+                      </Row>
+                      <Form.Item
+                        style={{ justifyContent: "center", display: "flex" }}
+                      >
+                        <Button type="primary" htmlType="submit">
+                          {t("save")}
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  )}
+
+                  {selectedTabId === 3 && (
+                    <div style={{ marginTop: "-20px" }}>
+                      <Title level={5}>{t("helpMsg")}</Title>
+                      <Text>{t("contactWithEmail")}</Text>
+                      <List
+                        dataSource={[
+                          {
+                            icon: <PhoneOutlined />,
+                            label: t("phone"),
+                            value: rData?.active_shop
+                              ? product?.contactNumber
+                              : rData?.phone,
+                            href: "tel:",
+                          },
+                          {
+                            icon: <MailOutlined />,
+                            label: t("email"),
+                            value: rData?.active_shop
+                              ? product?.email
+                              : rData?.email,
+                            href: "mailto:",
+                          },
+                          {
+                            icon: <GlobalOutlined />,
+                            label: t("website"),
+                            value: rData?.active_shop
+                              ? product?.siteUrl
+                              : rData?.siteUrl,
+                            href: "",
+                          },
+                        ].filter((item) => item.value)}
+                        renderItem={(item) => (
+                          <List.Item
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <span style={{ marginRight: "15px" }}>
+                              {item.icon}
+                            </span>{" "}
+                            {/* Icon with gap */}
+                            <List.Item.Meta
+                              title={item.label}
+                              description={
+                                <Link
+                                  href={`${item.href}${item.value}`}
+                                  target="_blank"
+                                >
+                                  {item.value}
+                                </Link>
+                              }
+                            />
+                          </List.Item>
+                        )}
+                      />
+                      <Title level={5}>{t("disclaimer")}:</Title>
+                      <Text>{t("imCertified")}</Text>
+                    </div>
+                  )}
+                </div>
+                <Text
                   style={{
-                    width: "100%", 
+                    position: "absolute",
+                    bottom: 0,
+                    left: "50%",
+                    transform: "translate(-50% ,-50%)",
                   }}
-                >
-                  <PhoneInput
-                    style={{
-                      width: "100%", 
-                    }}
-                    country="in"
-                    value={phone}
-                    onChange={(value) => {
-                      setPhone(value);
-                      // setShowValidation(true);
-                    }}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  validateStatus={city || !showValidation ? "" : "error"}
-                  help={city || !showValidation ? "" : t("City is required")}
-                >
-                  <Input
-                    prefix={<HomeOutlined />}
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder={t("Enter your city")}
-                  />
-                </Form.Item>
-                <Form>
+                >{`V ${localmanifestVersion?.localVersion || ""}`}</Text>
+              </>
+            ) : (
+              <div style={{ padding: 16 }}>
+                <Form onFinish={onActivateSubmit} style={{ marginTop: "30px" }}>
+                  {licenseMessage && (
+                    <Alert
+                      // message={t(licenseMessage)}
+                      type="error" // Changed to "error" for red color
+                      style={{ marginBottom: 16 }}
+                    />
+                  )}
                   <Form.Item
-                    validateStatus={country || !showValidation ? "" : "error"}
+                    validateStatus={name || !showValidation ? "" : "error"}
+                    help={name || !showValidation ? "" : t("Name is required")}
+                  >
+                    <Input
+                      prefix={<UserOutlined />}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder={t("Enter your name")}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    validateStatus={
+                      (email && isEmailIsValid(email)) || !showValidation
+                        ? ""
+                        : "error"
+                    }
                     help={
-                      country || !showValidation ? "" : t("Country is required")
+                      email
+                        ? isEmailIsValid(email) || !showValidation
+                          ? ""
+                          : t("Invalid email")
+                        : showValidation
+                        ? t("Email is required")
+                        : ""
                     }
                   >
-                    <Select
-                      showSearch
-                      defaultValue={"IN"}
-                      value={country ?? "IN"}
-                      onChange={setCountry}
-                      placeholder={t("Select your country")}
-                    >
-                      {countryList.map((x) => (
-                        <Option key={x.countryCode} value={x.countryCode}>
-                          {x.countryNameEn}
-                        </Option>
-                      ))}
-                    </Select>
+                    <Input
+                      prefix={<MailOutlined />}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={t("Enter your email")}
+                    />
                   </Form.Item>
-                </Form>
 
-                {/* <Form.Item
+                  <Form.Item
+                    validateStatus={!phone || phone === "91" ? "error" : ""}
+                    help={
+                      !phone || phone === "91" ? t("Phone is required") : ""
+                    }
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    <PhoneInput
+                      inputStyle={{
+                        width: "100%",
+                      }}
+                      country="in"
+                      value={phone}
+                      onChange={(value) => {
+                        setPhone(value);
+                        // setShowValidation(true);
+                      }}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    validateStatus={city || !showValidation ? "" : "error"}
+                    help={city || !showValidation ? "" : t("City is required")}
+                  >
+                    <Input
+                      prefix={<HomeOutlined />}
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder={t("Enter your city")}
+                    />
+                  </Form.Item>
+                  <Form>
+                  <Form.Item name="country" rules={[{ required: true, message: t("selectCountry") }]}>
+                  {/* <IoLocationOutline style={{ fontSize: "1.2rem" }} /> */}
+                  <Select value={country}  onChange={(value) => setCountry(value)} prefix={<EnvironmentOutlined  style={{ fontSize: "1.2rem" }}/> } placeholder={t("selectCountry")} showSearch>
+                    {countryList.map((x) => (
+                      <Option key={x.countryCode}
+                      value={x.countryNameEn}
+                      label={x.countryNameEn}>
+                        {x.countryNameEn}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                  </Form>
+
+                  {/* <Form.Item
                   validateStatus={
                     key ? (keyIsValid ? "success" : "error") : "error"
                   }
@@ -996,88 +1006,89 @@ const FormComponent = () => {
                     }
                   />
                 </Form.Item> */}
-                <Form.Item
-                  validateStatus={
-                    showValidation
-                      ? key
-                        ? keyIsValid
-                          ? "success"
+                  <Form.Item
+                    validateStatus={
+                      showValidation
+                        ? key
+                          ? keyIsValid
+                            ? "success"
+                            : "error"
                           : "error"
-                        : "error"
-                      : ""
-                  }
-                  help={
-                    showValidation
-                      ? key
-                        ? keyIsValid
-                          ? ""
-                          : t("Invalid license key")
-                        : t("License key is required")
-                      : ""
-                  }
-                >
-                  <Input
-                    prefix={<KeyOutlined />}
-                    value={key}
-                    onChange={(e) => {
-                      setKey(e.target.value);
-                      setShowValidation(true); // ફક્ત ફેરફાર બાદ વેલિડેશન ચાલુ થાય
-                    }}
-                    placeholder={t("Enter license key")}
-                    suffix={
-                      key && keyIsValid ? (
-                        <CheckCircleOutlined style={{ color: "green" }} />
-                      ) : key ? (
-                        <CloseCircleOutlined style={{ color: "red" }} />
-                      ) : null
+                        : ""
                     }
-                  />
-                </Form.Item>
+                    help={
+                      showValidation
+                        ? key
+                          ? keyIsValid
+                            ? ""
+                            : t("Invalid license key")
+                          : t("License key is required")
+                        : ""
+                    }
+                  >
+                    <Input
+                      prefix={<KeyOutlined />}
+                      value={key}
+                      onChange={(e) => {
+                        setKey(e.target.value);
+                        setShowValidation(true); // ફક્ત ફેરફાર બાદ વેલિડેશન ચાલુ થાય
+                      }}
+                      placeholder={t("Enter license key")}
+                      suffix={
+                        key && keyIsValid ? (
+                          <CheckCircleOutlined style={{ color: "green" }} />
+                        ) : key ? (
+                          <CloseCircleOutlined style={{ color: "red" }} />
+                        ) : null
+                      }
+                    />
+                  </Form.Item>
 
-                <Space
-                  style={{
-                    justifyContent: "flex-end",
-                    width: "100%",
-                    marginTop: "-5p",
-                  }}
-                >
-                  <span
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      console.log("Get trial clicked");
-                      // Add getTrial logic here
+                  <Space
+                    style={{
+                      justifyContent: "flex-end",
+                      width: "100%",
+                      marginTop: "-5p",
                     }}
                   >
-                    {t("Get Trial")}
-                  </span>
-                </Space>
-
-                <Form.Item
-                  style={{ justifyContent: "center", display: "flex" }}
-                >
-                  <Space>
-                    <Button type="primary" htmlType="submit">
-                      {t("activate")}
-                    </Button>
-                    {product && rData?.active_shop && (
-                      <Button>
-                        <a
-                          href={product?.siteUrl || rData?.buy_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {t("buyNow")}
-                        </a>
-                      </Button>
-                    )}
+                    <span
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        console.log("Get trial clicked");
+                        // Add getTrial logic here
+                      }}
+                    >
+                      {t("Get Trial")}
+                    </span>
                   </Space>
-                </Form.Item>
-              </Form>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+
+                  <Form.Item
+                    style={{ justifyContent: "center", display: "flex" }}
+                  >
+                    <Space>
+                      <Button type="primary" htmlType="submit">
+                        {t("activate")}
+                      </Button>
+                      {product && rData?.active_shop && (
+                        <Button>
+                          <a
+                            href={product?.siteUrl || rData?.buy_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t("buyNow")}
+                          </a>
+                        </Button>
+                      )}
+                    </Space>
+                  </Form.Item>
+                </Form>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </ConfigProvider>
   );
 };
 
