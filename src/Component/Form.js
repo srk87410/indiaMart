@@ -571,7 +571,7 @@ const FormComponent = () => {
                             autoplaySpeed={10000}
                             dots={false}
                           >
-                            {activeStep === 0 && product.image && (
+                            {activeStep === 0 && product?.image && (
                               <Link
                                 href={product.adBannerUrl || "#"}
                                 target="_blank"
@@ -582,7 +582,7 @@ const FormComponent = () => {
                                 }}
                               >
                                 <img
-                                  src={product.image || ""}
+                                  src={product?.image || ""}
                                   alt="Ad Banner"
                                   style={{ height: 200, width: "100%" }}
                                 />
