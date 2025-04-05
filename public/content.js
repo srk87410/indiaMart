@@ -57,7 +57,7 @@ scrapCurrentPage = (card) => {
     try {
       //Title
       try {
-        data.title = card.querySelectorAll(".prd-name")[0].innerText;
+        data.title = card.querySelectorAll(".producttitle")[0].innerText;
       } catch (e) {
         console.log("Error: Title", e);
       }

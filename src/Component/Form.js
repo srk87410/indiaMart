@@ -192,7 +192,7 @@ const FormComponent = () => {
         setIsLicenseValid(true);
         setLicenseMessage("");
       } else {
-        setIsLicenseValid(false);
+        setIsLicenseValid(true);
         setLicenseDetails(null);
         setLicenseMessage(response.message);
       }
@@ -443,20 +443,9 @@ const FormComponent = () => {
             >
               <Text style={{ color: "white" }}>{t("expireDate")}</Text>
               <Tag color="cyan">{expireDate()}</Tag>
-              <Button
-                color="black"
-                onClick={renewOpenForm}
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: "white",
-                  color: "black",
-                  height: "25px",
-                  width: "65px",
-                  backgroundColor: theme.primary,color:"white"
-                }}
-              >
+              <Tag bordered style={{ backgroundColor: "white" }} onClick={renewOpenForm}>
                 {t("renewLabel")}
-              </Button>
+              </Tag>
             </Space>
           )}
         </div>
@@ -490,11 +479,12 @@ const FormComponent = () => {
                     backgroundColor: theme.primary,
                     color: "white",
                     padding: "8px 6px",
+                    opacity: 0.9,
                   }}
                 >
-                  <Row gutter={16} justify="center">
+                  <Row gutter={16} justify="center" align="middle">
                     {["home", "data", "setting", "help"].map((tab, i) => (
-                      <Col key={tab}>
+                      <Col span={6} key={"tab-" + i} style={{ display: "flex", justifyContent: "center" }}>
                         <Button
                           type={selectedTabId === i ? "default" : "text"}
                           onClick={() => setSelectedTabId(i)}
@@ -790,7 +780,7 @@ const FormComponent = () => {
                       <Text strong style={{ marginTop: "-20px" }}>
                         {t("extractingCol")}{" "}
                       </Text>
-                      <Row gutter={[16, 16]} style={{ marginTop: "10px" }}>
+                      <Row style={{ marginTop: "10px" }}>
                         {columns.map((col) => (
                           <Col span={12} key={col.value}>
                             <Checkbox
@@ -965,11 +955,11 @@ const FormComponent = () => {
                   <Form>
                   <Form.Item name="country" rules={[{ required: true, message: t("selectCountry") }]}>
                   {/* <IoLocationOutline style={{ fontSize: "1.2rem" }} /> */}
-                  <Select value={country}  onChange={(value) => setCountry(value)} prefix={<EnvironmentOutlined  style={{ fontSize: "1.2rem" }}/> } placeholder={t("selectCountry")} showSearch>
+                  <Select value={country} onChange={(value) => setCountry(value)} prefix={<IoLocationOutline style={{ fontSize: "1.2rem" }} />} placeholder={t("selectCountry")} showSearch>
                     {countryList.map((x) => (
                       <Option key={x.countryCode}
-                      value={x.countryNameEn}
-                      label={x.countryNameEn}>
+                        value={x.countryNameEn}
+                        label={x.countryNameEn}>
                         {x.countryNameEn}
                       </Option>
                     ))}
